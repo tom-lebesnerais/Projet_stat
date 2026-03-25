@@ -1,0 +1,50 @@
+
+install.packages("tidyverse")
+library(tidyverse)
+library(hrbrthemes) # Pour des graphiques plus "propres" (optionnel)
+library(dplyr)
+
+# Liste de tes 14 pays pour filtrer si besoin
+
+df_final_filtre <- readRDS("donnees_finales_filtrees.rds")
+
+library(tidyverse)
+
+df_113 <- df_final_filtre %>%
+  # On s'assure de filtrer les valeurs manquantes sur les deux variables clés
+  filter(!is.na(FL166Q03HA), !is.na(FL162Q06HA)) %>%
+  mutate(
+    # Recodage de la variable explicative (X) en facteurs ordonnés
+    Activite_Label = case_when(
+      FL166Q03HA == 1 ~ "Jamais",
+      FL166Q03HA == 2 ~ "Parfois",
+      FL166Q03HA == 3 ~ "Souvent"
+    ),
+    Activite_Label = factor(Activite_Label, levels = c("Jamais", "Parfois", "Souvent")),
+    # Conversion de la confiance en numérique pour calculer la moyenne
+    Confiance_Num = as.numeric(FL162Q06HA)
+  )
+
+# 2. Calcul des statistiques (Moyenne + Intervalle de Confiance à 95%)
+df_summary <- df_113 %>%
+  group_by(Activite_Label) %>%
+  summarise(
+    Moyenne = mean(Confiance_Num, na.rm = TRUE),
+    sd_val = sd(Confiance_Num, na.rm = TRUE),
+    n_obs = n()
+  ) %>%
+  mutate(se = sd_val / sqrt(n_obs)) # Erreur standard
+
+# 3. Graphique final
+ggplot(df_summary, aes(x = Activite_Label, y = Moyenne, group = 1)) +
+  # La ligne grise montre la tendance générale
+  geom_line(color = "grey70", size = 1, linetype = "dashed")+
+  # Le point central représente la moyenne
+  geom_point(size = 4, color = "#e76f51") +
+  labs(
+    title = "Confiance moyenne pour planifier ses dépenses selon la fréquence de l'activité",
+    x = "Fréquence de l'activité en classe",
+    y = "Niveau moyen de confiance (échelle 1-4)"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(panel.grid.minor = element_blank())
