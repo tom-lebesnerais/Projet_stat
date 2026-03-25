@@ -1,0 +1,63 @@
+install.packages("tidyverse")
+library(tidyverse)
+library(hrbrthemes) # Pour des graphiques plus "propres" (optionnel)
+library(dplyr)
+
+# Liste de tes 14 pays pour filtrer si besoin
+
+df_final_filtre <- readRDS("donnees_finales_filtrees.rds")
+
+# 1. Liste des variables cibles
+variables_cibles <- c("FL164Q05HA","FL164Q06HA", "FL164Q09HA", "FL164Q10HA", "FL164Q12HA", "FL164Q13HA", "FL164Q14HA", "FL164Q16HA")
+
+# 2. Transformation et filtrage
+# 2. Préparation des données
+df_111_stack <- df_final_filtre %>%
+  select(all_of(variables_cibles)) %>%
+  pivot_longer(everything(), names_to = "Terme", values_to = "Score") %>%
+  filter(!is.na(Score)) %>%
+  # Recodage des libellés et des scores
+  mutate(
+    Label = case_when(
+      Terme == "FL164Q05HA" ~ "Actions / Stocks",
+      Terme == "FL164Q06HA" ~ "Retour sur investissement",
+      Terme == "FL164Q09HA" ~ "Carte de débit",
+      Terme == "FL164Q10HA" ~ "Prêt bancaire",
+      Terme == "FL164Q12HA" ~ "Budget",
+      Terme == "FL164Q13HA" ~ "Salaire",
+      Terme == "FL164Q14HA" ~ "Entrepreneur",
+      Terme == "FL164Q16HA" ~ "Impôts",
+      TRUE ~ "Autre"
+    ),
+    Niveau = case_when(
+      Score == 1 ~ "Jamais entendu",
+      Score == 2 ~ "Entendu, mais ne sait pas",
+      Score == 3 ~ "Entendu et comprend",
+      TRUE ~ NA_character_
+    ),
+    # On force l'ordre pour la légende
+    Niveau = factor(Niveau, levels = c("Jamais entendu", "Entendu, mais ne sait pas", "Entendu et comprend"))
+  )
+
+# 3. Calcul des pourcentages pour le graphique
+df_plot <- df_111_stack %>%
+  count(Label, Niveau) %>%
+  group_by(Label) %>%
+  mutate(Percentage = n / sum(n) * 100) %>%
+  ungroup()
+
+# 4. Graphique en barres empilées
+ggplot(df_plot, aes(x = reorder(Label, (Niveau == "Entendu et comprend") * Percentage), 
+                    y = Percentage, fill = Niveau)) +
+  geom_bar(stat = "identity", position = "stack", width = 0.7) +
+  coord_flip() +
+  scale_fill_manual(values = c("red", "orange", "blue")) + # Couleurs : Rouge (1), Blanc (2), Bleu (3)
+  labs(
+    title = "Degré de connaissance des concepts financiers",
+    subtitle = "Répartition des réponses des élèves",
+    x = NULL,
+    y = "Pourcentage (%)",
+    fill = "Niveau de connaissance"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
