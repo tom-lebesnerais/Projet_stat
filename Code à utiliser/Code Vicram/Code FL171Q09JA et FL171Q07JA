@@ -1,0 +1,55 @@
+
+
+library(tidyverse)
+library(hrbrthemes) # Pour des graphiques plus "propres" (optionnel)
+library(dplyr)
+
+install.packages("ineq")
+library(ineq)
+
+df_final_filtre <- readRDS("donnees_finales_filtrees.rds")
+
+
+
+#2.2
+
+# -------------------------------------------------------------------------
+# ANALYSE L : Pression des pairs vs Dépassement de budget
+# -------------------------------------------------------------------------
+library(tidyverse)
+library(scales)
+
+df_L <- df_final_filtre %>%
+  select(Amis = FL171Q09JA, Budget = FL171Q07JA) %>%
+  drop_na() %>%
+  # On exclut les codes d'erreur PISA classiques
+  filter(!Amis %in% c("Valid Skip", "Not Reached", "Omitted"),
+         !Budget %in% c("Valid Skip", "Not Reached", "Omitted"))
+
+# 1. Test du Chi-2 d'indépendance
+tableau_croise_L <- table(df_L$Amis, df_L$Budget)
+print(chisq.test(tableau_croise_L))
+
+# 2. Préparation pour le graphique
+df_plot_L <- df_L %>%
+  group_by(Amis, Budget) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(Amis) %>%
+  mutate(Pourcentage = n / sum(n))
+
+# 3. Graphique en barres 100%
+plot_L <- ggplot(df_plot_L, aes(x = Amis, y = Pourcentage, fill = Budget)) +
+  geom_col(position = "fill", width = 0.6) +
+  scale_y_continuous(labels = percent_format()) +
+  theme_minimal() +
+  labs(
+    title = "Impact de la pression des amis sur le dépassement de budget",
+    x = "Fréquence d'achat 'parce que les amis l'ont' (FL171Q09JA)",
+    y = "Proportion d'élèves",
+    fill = "A dépensé plus que prévu (FL171Q07JA):"
+  ) +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5),
+    legend.position = "bottom"
+  )
+print(plot_L)
