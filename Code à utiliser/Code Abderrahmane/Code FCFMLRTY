@@ -1,1 +1,108 @@
 
+
+library(tidyverse)
+library(hrbrthemes) # Pour des graphiques plus "propres" (optionnel)
+library(dplyr)
+
+install.packages("ineq")
+library(ineq)
+
+df_final_filtre <- readRDS("donnees_finales_filtrees.rds")
+
+
+# 1. On prépare les données (en gardant seulement FCFMLRTY et le Groupe)
+df_lorenz_groupes <- df_final_filtre2 %>%
+  filter(Groupe_Educ_Pays != "Autre") %>%
+  select(Groupe_Educ_Pays, Score_Connaissance = FCFMLRTY) %>%
+  drop_na()
+
+# 2. Translation pour n'avoir que des valeurs positives (requis pour le Gini)
+min_score_global <- min(df_lorenz_groupes$Score_Connaissance)
+df_lorenz_groupes <- df_lorenz_groupes %>%
+  mutate(Score_Positif = Score_Connaissance + abs(min_score_global) + 0.1)
+
+# -------------------------------------------------------------------------
+# CALCUL : Indices de Gini par groupe
+# -------------------------------------------------------------------------
+
+gini_par_groupe <- df_lorenz_groupes %>%
+  group_by(Groupe_Educ_Pays) %>%
+  summarise(
+    Gini_Index = ineq(Score_Positif, type = "Gini"),
+    .groups = 'drop'
+  )
+
+print("--- INDICES DE GINI PAR GROUPE ---")
+print(gini_par_groupe)
+
+# -------------------------------------------------------------------------
+# GRAPHIQUE : Courbes de Lorenz superposées
+# -------------------------------------------------------------------------
+
+# Pour tracer les courbes avec ggplot, on doit créer une fonction qui 
+# génère les coordonnées (x=p, y=L) pour chaque groupe.
+
+generer_coords_lorenz <- function(data_groupe) {
+  courbe <- Lc(data_groupe$Score_Positif)
+  data.frame(
+    P_Pop = courbe$p,
+    P_Score = courbe$L
+  )
+}
+
+# On applique la fonction à chaque groupe
+df_plot_lorenz_groupes <- df_lorenz_groupes %>%
+  group_by(Groupe_Educ_Pays) %>%
+  group_modify(~ generer_coords_lorenz(.x)) %>%
+  ungroup()
+
+# Création du graphique
+plot_Lorenz_Multi <- ggplot(df_plot_lorenz_groupes, aes(x = P_Pop, y = P_Score, color = Groupe_Educ_Pays)) +
+  # Diagonale de parfaite égalité
+  geom_abline(intercept = 0, slope = 1, linetype = "dashed", color = "black", size = 0.8) +
+  # Les 3 courbes de Lorenz
+  geom_line(size = 1.2) +
+  scale_color_manual(values = c("Groupe1 (< 60%)" = "#D55E00",     # Rouge/Orange
+                                "Groupe2 (65-85%)" = "#009E73",      # Vert
+                                "Groupe3 (> 85%)" = "#0072B2")) + # Bleu
+  scale_x_continuous(labels = scales::percent_format()) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  theme_minimal() +
+  labs(
+    title = "Courbes de Lorenz de l'indice de familiarité (FCFMLRTY) par groupe de pays",
+    x = "Pourcentage cumulé d'élèves",
+    y = "Pourcentage cumulé de la familiarité avec les termes",
+    color = "Niveau d'éducation (Pays) :"
+  ) +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5),
+    legend.position = "bottom"
+  )
+
+# Afficher le graphique
+print(plot_Lorenz_Multi)
+
+
+
+
+
+
+
+
+#  Calcul de la corrélation de Pearson (ESCS vs FCFLMRTY) pour chaque groupe
+correlation_par_groupe <- df_final_filtre2 %>%
+  # On exclut les éventuels pays "Autre" pour l'analyse
+  filter(Groupe_Educ_Pays != "Autre") %>%
+  group_by(Groupe_Educ_Pays) %>%
+  summarise(
+    # use="complete.obs" permet d'ignorer proprement les NA pour le calcul
+    CoefCorrelation = cor(ESCS, FCFMLRTY, use = "complete.obs"),
+    # On ajoute la taille de l'échantillon pour vérifier
+    NbEleves = n()
+  )
+
+# Affichage des résultats
+print("--- Corrélation ESCS / FCFLMRTY selon le niveau éducatif du pays ---")
+print(correlation_par_groupe)
+
+
