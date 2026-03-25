@@ -1,0 +1,50 @@
+
+library(tidyverse)
+library(hrbrthemes) # Pour des graphiques plus "propres" (optionnel)
+library(dplyr)
+
+install.packages("ineq")
+library(ineq)
+
+df_final_filtre <- readRDS("donnees_finales_filtrees.rds")
+
+
+
+# 1. On prend les données brutes sans forcer les niveaux
+df_M <- df_final_filtre %>%
+  select(Achat_Ligne = FL171Q03JA, Confiance_Num = FLCONICT) %>%
+  drop_na() %>%
+  # On exclut juste les mots parasites évidents de PISA s'ils existent
+  filter(!Achat_Ligne %in% c("Valid Skip", "Not Reached", "Omitted", "Miss", "9", "8", "7")) %>%
+  # On s'assure que c'est bien considéré comme une catégorie (facteur)
+  mutate(Achat_Ligne = as.factor(Achat_Ligne))
+
+# --- VÉRIFICATION CRUCIALE ---
+# Regarde ce qui s'affiche ici dans la console !
+print("Voici les modalités réellement trouvées dans tes données :")
+print(table(df_M$Achat_Ligne))
+# -----------------------------
+
+# 2. Test ANOVA (maintenant ça marchera car il y aura plusieurs niveaux)
+anova_M <- aov(Confiance_Num ~ Achat_Ligne, data = df_M)
+print("Résultat de l'ANOVA :")
+print(summary(anova_M))
+
+# 3. Création des Boxplots bruts
+plot_M <- ggplot(df_M, aes(x = Achat_Ligne, y = Confiance_Num, fill = Achat_Ligne)) +
+  geom_boxplot(alpha = 0.6, outlier.size = 0.5, outlier.alpha = 0.3) +
+  stat_summary(fun = mean, geom = "point", shape = 18, size = 3, color = "red") +
+  theme_minimal() +
+  labs(
+    title = "Relation entre fréquence d'achat en ligne et confiance numérique",
+    x = "Fréquence des achats en ligne (FL171Q03JA)",
+    y = "Indice de confiance numérique (FLCONICT)"
+  ) +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5),
+    legend.position = "none",
+    # On incline le texte de l'axe X pour que les mots bruts soient lisibles
+    axis.text.x = element_text(angle = 0, hjust = 1)
+  )
+
+print(plot_M)
