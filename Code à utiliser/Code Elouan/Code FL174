@@ -1,1 +1,50 @@
+install.packages("tidyverse")
+library(tidyverse)
+library(hrbrthemes) # Pour des graphiques plus "propres" (optionnel)
+library(dplyr)
+
+# Liste de tes 14 pays pour filtrer si besoin
+
+df_final_filtre <- readRDS("donnees_finales_filtrees.rds")
+
+
+# 1. Préparation des données
+df_112_clean <- df_final_filtre %>%
+  select(starts_with("FL174")) %>%
+  pivot_longer(everything(), names_to = "Cours", values_to = "Reponse") %>%
+  # On exclut les "Je ne sais pas" (3) et "Je n'ai pas ce cours" (4) 
+  # pour ne garder que la réalité de l'enseignement dispensé
+  filter(Reponse %in% c(1, 2)) %>% 
+  mutate(Matiere = case_when(
+    Cours == "FL174Q01JA" ~ "Mathématiques",
+    Cours == "FL174Q02JA" ~ "Sciences Sociales",
+    Cours == "FL174Q03JA" ~ "Citoyenneté",
+    Cours == "FL174Q04JA" ~ "Économie/Business",
+    Cours == "FL174Q05JA" ~ "Autre cours",
+    Cours == "FL174Q06JA" ~ "Intervenant extérieur",
+    Cours == "FL174Q07JA" ~ "Extra-scolaire"
+  )) %>%
+  # On calcule le taux de "Oui" (1) par matière
+  group_by(Matiere) %>%
+  summarise(
+    Total_Eleves_Concernes = n(),
+    Nb_Oui = sum(Reponse == 1),
+    Taux_Presence = (Nb_Oui / Total_Eleves_Concernes) * 100
+  ) %>%
+  filter(!is.na(Matiere)) # Sécurité pour les NA éventuels
+
+# 2. Graphique amélioré
+ggplot(df_112_clean, aes(x = reorder(Matiere, Taux_Presence), y = Taux_Presence)) +
+  geom_bar(stat = "identity", fill = "#69b3a2", width = 0.7) +
+  # Ajout des étiquettes pour la lecture directe
+  geom_text(aes(label = paste0(round(Taux_Presence, 1), "%")), 
+            hjust = -0.1, size = 3.5, color = "black") +
+  labs(
+    title = "Présence de l'éducation financière dans les matières",
+    x = NULL, 
+    y = "% d'élèves déclarant avoir abordé le sujet (parmi ceux suivant le cours)"
+  ) +
+  scale_y_continuous(limits = c(0, 110)) + # Pour laisser de la place au texte
+  theme_light() +
+  coord_flip()
 
