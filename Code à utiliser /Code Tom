@@ -1,1 +1,55 @@
+install.packages("scales")
+library(scales)
+
+library(tidyverse)
+library(scales)
+
+# 1. Préparation des données corrigée
+df_analyse_A <- df_final_filtre %>%
+  select(FL167Q01HA, FL167Q02HA, FL167Q03HA, FL167Q06JA, FL167Q05HA) %>%
+  # On enlève toutes les lignes qui ont des vrais NA
+  drop_na() %>%
+  rename(
+    `Décisions de dépenses` = FL167Q01HA,
+    `Décisions d'épargne` = FL167Q02HA,
+    `Budget familial` = FL167Q03HA,
+    `Utiliser son argent de poche` = FL167Q06JA ,
+    `Actualités liés à l'économie` = FL167Q05HA
+  ) %>%
+  pivot_longer(cols = everything(), names_to = "Sujet", values_to = "Frequence") %>%
+  # On filtre les éventuels codes d'erreur PISA (comme "Valid Skip", "Not Reached", etc.)
+  # Adapte cette ligne si tu vois d'autres mots bizarres dans tes données
+  filter(!Frequence %in% c("Valid Skip", "Not Reached", "Omitted", "Miss", "9", "8", "7")) %>%
+  # Laisse R gérer les modalités réelles avec as.factor() d'abord
+  mutate(Frequence = as.factor(Frequence)) %>%
+  group_by(Sujet, Frequence) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(Sujet) %>%
+  mutate(Pourcentage = n / sum(n))
+
+# 2. On affiche les modalités réelles trouvées pour pouvoir les recoder si besoin
+print("Voici les modalités réellement présentes dans tes données :")
+print(levels(df_analyse_A$Frequence))
+
+# 3. Création du graphique (sans scale_fill_manual pour l'instant, pour voir les couleurs automatiques)
+plot_A <- ggplot(df_analyse_A, aes(x = Sujet, y = Pourcentage, fill = Frequence)) +
+  geom_col(position = "fill", width = 0.6) +
+  geom_text(aes(label = percent(Pourcentage, accuracy = 1)), 
+            position = position_fill(vjust = 0.5), 
+            color = "white", size = 3.5, fontface = "bold") +
+  coord_flip() + 
+  scale_y_continuous(labels = percent_format()) +
+  theme_minimal() +
+  labs(
+    title = "Fréquence des discussions en famille",
+    x = "", 
+    y = "Pourcentage d'élèves",
+    fill = "Fréquence :"
+  ) +
+  theme(
+    legend.position = "bottom",,
+    plot.title = element_text(face = "bold", hjust = 0.5)
+  )
+
+print(plot_A)
 
