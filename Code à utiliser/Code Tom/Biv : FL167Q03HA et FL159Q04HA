@@ -1,0 +1,65 @@
+
+install.packages("tidyverse")
+library(tidyverse)
+library(hrbrthemes) # Pour des graphiques plus "propres" (optionnel)
+library(dplyr)
+
+# Liste de tes 14 pays pour filtrer si besoin
+
+df_final_filtre <- readRDS("donnees_finales_filtrees.rds")
+
+
+# 1. Préparation basique (sans forcer les modalités)
+df_analyse_C <- df_final_filtre %>%
+  select(Budget_fam = FL167Q03HA, Responsabilite = FL159Q04HA) %>%
+  # On retire les vrais NA
+  drop_na() %>%
+  # On filtre les éventuelles valeurs aberrantes de PISA
+  filter(!Budget_fam %in% c("Valid Skip", "Not Reached", "Omitted", "Miss", "9", "8", "7")) %>%
+  filter(!Responsabilite %in% c("Valid Skip", "Not Reached", "Omitted", "Miss", "9", "8", "7")) %>%
+  # On transforme en facteurs
+  mutate(
+    Budget_fam = as.factor(Budget_fam),
+    Responsabilite = as.factor(Responsabilite)
+  )
+
+# 2. Test Statistique (Test du Chi-2 d'indépendance)
+# Création du tableau de contingence brut
+tableau_croise <- table(df_analyse_C$Budget_fam, df_analyse_C$Responsabilite)
+
+print("Voici ton tableau croisé brut (vérifie s'il y a bien des chiffres) :")
+print(tableau_croise)
+
+# On lance le test
+test_chi2 <- chisq.test(tableau_croise)
+print("Résultat du Test du Chi-2 :")
+print(test_chi2)
+
+# 3. Préparation des données pour le graphique
+df_plot_C <- df_analyse_C %>%
+  group_by(Budget_fam, Responsabilite) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(Budget_fam) %>%
+  mutate(Pourcentage = n / sum(n))
+
+# 4. Création du graphique brut
+plot_C <- ggplot(df_plot_C, aes(x = Budget_fam, y = Pourcentage, fill = Responsabilite)) +
+  geom_col(position = "dodge", width = 0.6) +
+  geom_text(aes(label = scales::percent(Pourcentage, accuracy = 1)), 
+            position = position_dodge(width = 0.6), 
+            vjust = -0.5, size = 4, fontface = "bold") +
+  scale_y_continuous(labels = scales::percent_format(), limits = c(0, 1)) +
+  theme_minimal() +
+  labs(
+    title = "Sentiment de responsabilité selon les discussions familiales",
+    x = "Fréquence de discussion du budget familial(FL167Q03HA)", 
+    y = "Pourcentage d'élèves",
+    fill = "Sentiment de responsabilité(FL159Q04HA) :"
+  ) +
+  theme(
+    legend.position = "bottom",
+    plot.title = element_text(face = "bold", hjust = 0.5),
+    axis.text.x = element_text(angle = 0, hjust = 1) # Pour bien lire les labels bruts
+  )
+
+print(plot_C)
