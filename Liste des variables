@@ -14,6 +14,7 @@ FL166 How often have you encountered the following types of tasks or activities 
 FL166Q01HA Describing the purpose and uses of money
 FL166Q02HA Exploring the difference between spending money on needs and wants  (gérer ses envies)
 FL166Q03HA Exploring ways of planning to pay an expense  
+FL166Q05HA Discussing the rights of consumers when dealing with financial institutions 
 FL166Q07HA Analysing advertisements to understand how they encourage people to buy things 
 
 FL174 Have you encountered these tasks during the following classes or activities? (permettra rapidement de distinguer avec des analyses univariés, quels sont les cours les plus importants)
@@ -36,6 +37,7 @@ FL170Q01JA An allowance or pocket money for doing chores at home
 FL170Q02JA An allowance or pocket money, without having to do any chores 
 FL170Q03JA Working outside school hours (e.g. a holiday job, part-time work) 
 FL170Q04JA Working in a family business 
+FL167Q04HA Money for things you want to buy  
 FL170Q07JA Selling things (e.g. at local markets or on ) (réseaux sociaux)
 
 FL159 How much do you agree with the following statements about the way you handle your money? (Responsabilité financière)
@@ -61,6 +63,8 @@ FL162Q05HA Keeping track of my account balance
 FL162Q06HA Planning my spending with consideration of my current financial situation
 
 FL163 When using digital or electronic devices outside of the bank (e.g. at home or in shops), how confident would you feel about doing the following things? 
+FL163Q01HA Transferring money
+FL163Q02HA Keeping track of my balance 
 FL163Q03HA Paying with a debit card instead of using cash 
 FL163Q04HA Paying with a mobile device (e.g. mobile phone or tablet) instead of using cash 
 
@@ -68,8 +72,13 @@ FL171 In the last 12 months, how often have you done the following things?
 FL171Q01JA Checked that you were given the right change when you bought something with cash 
 FL171Q02JA Felt that you did not have enough money for something you wanted to buy 
 FL171Q03JA Bought something online (alone or with a family member) 
+FL171Q04JA Made a payment using a smartphone (i.e. mobile phone with Internet access) 
+FL171Q05JA Made a payment using a bank card (e.g. <debit card>) 
 FL171Q07JA Bought something that cost more money than you intended to spend
 FL171Q09JA Bought something because your friends have it  (influence des amis)
+FL171Q10JA Sent money to other people with a smartphone (i.e. mobile phone with Internet access) 
+FL171Q11JA Saved money in an account at a <bank, online bank, building society, post office or credit union> 
+FL171Q12JA Saved money at home  
 
 
 FL169 To what extent do you agree with the following statements?  (Avis des enquêtés sur le sujet)
