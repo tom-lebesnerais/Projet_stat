@@ -1,0 +1,154 @@
+
+Questionnaire financier :
+
+FL164 Thinking about school lessons in the last 12 months, have you heard of, or learnt about, the following terms?
+FL164Q05HA Shares/stocks 
+FL164Q09HA Debit card  
+FL164Q10HA Bank loan 
+FL164Q12HA Budget  
+FL164Q13HA Wage 
+FL164Q14HA Entrepreneur
+FL164Q16HA Income tax  
+
+FL166 How often have you encountered the following types of tasks or activities in a school lesson in the last 12 months? 
+FL166Q01HA Describing the purpose and uses of money
+FL166Q02HA Exploring the difference between spending money on needs and wants  (gérer ses envies)
+FL166Q03HA Exploring ways of planning to pay an expense  
+FL166Q07HA Analysing advertisements to understand how they encourage people to buy things 
+
+FL174 Have you encountered these tasks during the following classes or activities? (permettra rapidement de distinguer avec des analyses univariés, quels sont les cours les plus importants)
+FL174Q01JA During your mathematics class 
+FL174Q02JA During classes about social sciences () 
+FL174Q03JA During classes about citizenship ()
+FL174Q04JA During classes about economics or business 
+FL174Q06JA During a one-off lesson or activity in school time from an outside visitor (not one of your teachers) 
+FL174Q07JA During extra-curricular activity outside of school time
+
+FL167 How often do you discuss the following matters with your parents (or guardians or relatives)? (servira à la troisième partie éducation des parents)
+FL167Q01HA Your spending decisions   
+FL167Q02HA Your savings decisions  
+FL167Q06JA How to use your allowance or pocket money 
+FL167Q03HA The family budget (possibilité de faire un lien avec ceux qui dépensent
+FL167Q07JA Shopping online  (tout ce qui est réseaux sociaux)
+
+FL170 Thinking of the last 12 months, how often did you get money from any of these sources? 
+FL170Q01JA An allowance or pocket money for doing chores at home 
+FL170Q02JA An allowance or pocket money, without having to do any chores 
+FL170Q03JA Working outside school hours (e.g. a holiday job, part-time work) 
+FL170Q04JA Working in a family business 
+FL170Q07JA Selling things (e.g. at local markets or on ) (réseaux sociaux)
+
+FL159 How much do you agree with the following statements about the way you handle your money? (Responsabilité financière)
+FL159Q01HA I can decide independently what to spend my money on. 
+FL159Q02HA I can spend small amounts of my money independently, but for larger amounts I need to ask my parents or guardians for permission.
+FL159Q03HA I need to ask my parents or guardians for permission before I spend any money on my own. 
+FL159Q04HA I am responsible for my own money matters (e.g. for preventing theft).
+
+FL160 When you think about buying a new product from your allowance, how often do you do any of the following? (Comportement financier)
+FL160Q01HA Compare prices in different shops 
+FL160Q02HA Compare prices between a shop and an online shop
+FL160Q03HA Buy the product without comparing prices 
+FL160Q04HA Wait until the product gets cheaper before buying it 
+
+FL161 Do you have any of the following things? 
+FL161Q01HA An account with a bank, building society, post office or credit union
+FL161Q02HA A payment card/debit card
+FL161Q03HA A mobile app to access your account
+
+FL162 How confident would you feel about doing the following things?  (plus développé comme question, pas nécessaire.
+FL162Q01HA Making a money transfer (e.g. paying a bill)
+FL162Q05HA Keeping track of my account balance 
+FL162Q06HA Planning my spending with consideration of my current financial situation
+
+FL163 When using digital or electronic devices outside of the bank (e.g. at home or in shops), how confident would you feel about doing the following things? 
+FL163Q03HA Paying with a debit card instead of using cash 
+FL163Q04HA Paying with a mobile device (e.g. mobile phone or tablet) instead of using cash 
+
+FL171 In the last 12 months, how often have you done the following things?
+FL171Q01JA Checked that you were given the right change when you bought something with cash 
+FL171Q02JA Felt that you did not have enough money for something you wanted to buy 
+FL171Q03JA Bought something online (alone or with a family member) 
+FL171Q07JA Bought something that cost more money than you intended to spend
+FL171Q09JA Bought something because your friends have it  (influence des amis)
+
+
+FL169 To what extent do you agree with the following statements?  (Avis des enquêtés sur le sujet)
+FL169Q01HA I enjoy talking about money matters. 
+FL169Q05JA I know how to manage my money. 
+FL169Q02HA Young people should make their own decisions about how to spend their money.
+FL169Q06JA I buy things according to how I feel at the moment. 
+FL169Q07JA Saving is something I do only if I have money left over.  
+FL169Q03HA Money matters are not relevant for me right now. 
+FL169Q04HA I would like to run my own business in the future. 
+FL169Q08JA I am able to work effectively towards long-term goals.  
+FL169Q10JA I make savings goals for certain things I want to buy or to do.  
+FL169Q11JA It is easier to monitor my spending when I pay by cash than when I pay with a bank card. 
+
+FL172 To what extent do you agree or disagree with the following statements? 
+FL172Q01JA My friends have a strong influence on my spending decisions. 
+FL172Q03JA I want to keep up with my friends’ life style.  
+FL172Q05JA Sometimes I spend more than I would like when I am with my friends.
+FL172Q06JA I often buy what my friends recommend.  
+
+
+
+
+
+
+
+
+Questionnaire élève :
+
+Question ST005-ST008 : Etude et niveau de diplome des parents.
+Question ST258 : Fréquence à laquelle l'élève n'a pas pu manger par manque d'argent.
+Question ST259 : Position de la famille sur une échelle sociale de 1 à 10.
+Questions ST294 & ST295 : Fréquence d'un « travail rémunéré » avant ou après l'école.
+Question ST038 (Page 25) : Fréquence à laquelle l'élève a dû « donner de l'argent à quelqu'un à l'école » sous la menace. (à la limite du sujet)
+ST004 Sexe
+ST004Q01TA01 Mâle
+ST004Q01TA02 Femelle
+ST259 Selon vous, où se situe votre famille sur cette échelle ? 10 modalités à prendre en compte
+ST272 Sur une échelle de 1 à 10, comment évalueriez-vous la qualité de l’enseignement des mathématiques qui vous a été dispensé pendant cette année scolaire-ci ?
+ST297 Cette année scolaire-ci, quels cours supplémentaires de mathématiques suivez-vous ? 
+
+
+
+
+
+
+
+
+
+Indices construits par PISA à partir des questions :
+
+ISCEDP (Levels of education programmes(ISCED 2011))
+RELATST (Quality of student-teacher relationships (WLE))
+BELONG (sense of belonging (WLE))
+GROSAGR (Growth Mindset (WLE))
+
+FAMSUP (Family support (WLE))
+
+COGACRCO (Cognitive activation in mathematics: Foster reasoning Version B(WLE))
+COGACMO (Cognitive activation in mathematics : Encourage mathematical thinking Version B(WLE))
+
+FAMCON (Subjective familiarity with mathematics concepts (WLE))
+
+SCHSUST (School actions/activities to sustain learning (WLE))
+
+FAMSUPSL (Family support for self directed learning at home (WLE))
+FEELLAH (Feelings about learning at home (WLE))
+
+HISCED (Highest level of education of parents (ISCED))
+
+HOMEPOS (Home possessions (WLE))
+ESCS (Index of economic, social and cultural status)
+
+FCFLMRTY (Familiarity with concepts of finance)
+FLSCHOOL (Financial education in school lessons (WLE))
+FLMULTSB (Financial education in school lessons, multiple subjects  (WLE))
+FLFAMILY (Parental involvment in matters of FL (WLE))
+ACCESSFP (Access to money and financial products, sources of money (WLE))
+FLCONICT (Confidence about financial matters using digital devices (WLE))
+ACCESSFA (Access to money and financial products, financial activities (WLE))
+ATTCONFM (Attitudes towards and confidence about financial matters (WLE))
+FRINFLFM (Friends'influence on financial matters(WLE))
