@@ -18,7 +18,6 @@ df_analyse_A <- df_final_filtre %>%
   ) %>%
   pivot_longer(cols = everything(), names_to = "Sujet", values_to = "Frequence") %>%
   # On filtre les éventuels codes d'erreur PISA (comme "Valid Skip", "Not Reached", etc.)
-  # Adapte cette ligne si tu vois d'autres mots bizarres dans tes données
   filter(!Frequence %in% c("Valid Skip", "Not Reached", "Omitted", "Miss", "9", "8", "7")) %>%
   # Laisse R gérer les modalités réelles avec as.factor() d'abord
   mutate(Frequence = as.factor(Frequence)) %>%
