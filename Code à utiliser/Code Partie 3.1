@@ -1,0 +1,106 @@
+
+Il y a 2 analyses dans la partie 3.1
+#####################################
+
+
+library(dplyr)
+library(ggplot2)
+library(scales)
+library(FactoMineR)
+library(factoextra)
+library(tidyverse)
+
+df_final_filtre <- readRDS("donnees_finales_filtrees.rds")
+
+#Analyse 1
+
+
+# On part de df_final_filtre avec ESCS et FL159Q04HA disponibles
+df_resp_escs <- df_final_filtre %>%
+  select(ESCS, FL159Q04HA) %>%
+  drop_na(ESCS, FL159Q04HA)
+
+# Vérifier les modalités de FL159Q04HA (1 à 4)
+table(df_resp_escs$FL159Q04HA)
+
+# Créer des classes d'ESCS en quartiles
+df_resp_escs <- df_resp_escs %>%
+  mutate(
+    ESCS_classe = ntile(ESCS, 4),  # 1 = 25 % les plus bas, 4 = 25 % les plus hauts
+    ESCS_classe = factor(
+      ESCS_classe,
+      levels = 1:4,
+      labels = c("ESCS Q1 (25% les plus bas)",
+                 "ESCS Q2",
+                 "ESCS Q3",
+                 "ESCS Q4 (25% les plus hauts)")
+    )
+  )
+
+tab_resp <- df_resp_escs %>%
+  mutate(
+    Responsable_4 = ifelse(FL159Q04HA == 4, 1, 0)
+  ) %>%
+  group_by(ESCS_classe) %>%
+  summarise(
+    n = n(),
+    pct_responsable_4 = mean(Responsable_4, na.rm = TRUE) * 100,
+    .groups = "drop"
+  )
+
+tab_resp
+
+
+
+
+
+
+
+
+
+
+
+
+###################
+
+
+#Analyse 2
+
+
+df_school_digital <- df_final_filtre %>%
+  select(FLSCHOOL, FLCONICT) %>%
+  drop_na(FLSCHOOL, FLCONICT)
+
+# Corrélation de Pearson
+cor_FLSCHOOL_FLCONICT <- cor(df_school_digital$FLSCHOOL,
+                             df_school_digital$FLCONICT,
+                             use = "complete.obs",
+                             method = "pearson")
+
+cor_FLSCHOOL_FLCONICT
+
+
+df_school_digital <- df_school_digital %>%
+  mutate(
+    FLSCHOOL_q = ntile(FLSCHOOL, 4),
+    FLSCHOOL_q = factor(
+      FLSCHOOL_q,
+      levels = 1:4,
+      labels = c("Q1 (éducation scolaire la plus faible)",
+                 "Q2",
+                 "Q3",
+                 "Q4 (éducation scolaire la plus forte)")
+    )
+  )
+
+tab_digital <- df_school_digital %>%
+  group_by(FLSCHOOL_q) %>%
+  summarise(
+    n = n(),
+    FLCONICT_moy = mean(FLCONICT, na.rm = TRUE),
+    FLCONICT_med = median(FLCONICT, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+tab_digital
+
