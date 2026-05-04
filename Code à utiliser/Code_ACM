@@ -1,0 +1,64 @@
+library(dplyr)
+library(FactoMineR)
+library(factoextra)
+library(tidyverse)
+
+df_final_filtre <- readRDS("donnees_finales_filtrees.rds")
+
+# 1. Préparation du jeu de données pour l'ACM
+df_acm_light <- df_final_filtre %>%
+  select(
+    FL159Q04HA,   # responsabilité
+    FL167Q03HA,   # discussions budget familial
+    FL166Q03HA,   # exploration planification
+    FL171Q09JA,   # achats parce que les amis l'ont
+    FL171Q07JA,   # dépassement de budget
+    ESCS          # pour une variable illustrative éventuelle
+  ) %>%
+  drop_na()
+
+# 2. Créer des quartiles d'ESCS (illustratif, pas nécessairement actif)
+df_acm_light <- df_acm_light %>%
+  mutate(
+    ESCS_q = ntile(ESCS, 4),
+    ESCS_q = factor(ESCS_q,
+                    levels = 1:4,
+                    labels = c("ESCS Q1", "ESCS Q2", "ESCS Q3", "ESCS Q4"))
+  )
+
+# 3. Séparer variables actives (quali) et illustrative (ESCS_q)
+
+# Variables actives = 5 items de Likert
+df_acm_cat <- df_acm_light %>%
+  select(
+    FL159Q04HA,
+    FL167Q03HA,
+    FL166Q03HA,
+    FL171Q09JA,
+    FL171Q07JA
+  ) %>%
+  mutate(across(everything(), factor))
+
+# Variable illustrative
+var_supl <- df_acm_light$ESCS_q
+
+# 4. Lancer l'ACM avec FactoMineR
+res_acm_light <- MCA(df_acm_cat,
+                     quali.sup = NULL,  # ici toutes actives
+                     graph = FALSE)
+
+# 5. Visualiser les modalités
+fviz_mca_var(res_acm_light,
+             repel = TRUE,
+             ggtheme = theme_minimal())
+
+
+###########ATTENTION##############
+
+#Prends beaucoup de temps à s'exécuter:
+# 6. Visualiser les individus colorés par ESCS_q (illustratif)
+fviz_mca_ind(res_acm_light,
+             habillage = var_supl,       # colorer par quartile d'ESCS
+             addEllipses = TRUE,
+             repel = TRUE,
+             ggtheme = theme_minimal())
